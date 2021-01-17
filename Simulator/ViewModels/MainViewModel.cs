@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Simulator.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace Simulator.ViewModels
 {
     class MainViewModel : ReactiveObject
     {
-        readonly Logic logic;
+        public Logic<InputModel> Logic { get; }
 
         int counter;
         public int Counter { get => counter; set => this.RaiseAndSetIfChanged(ref counter, value); }
@@ -20,7 +21,7 @@ namespace Simulator.ViewModels
 
         public MainViewModel()
         {
-            logic = new((counter, direction, frequency) => (Counter, Direction, Frequency) = (counter, direction, frequency));
+            Logic = new((counter, direction, frequency) => (Counter, Direction, Frequency) = (counter, direction, frequency));
         }
     }
 }

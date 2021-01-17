@@ -2,14 +2,14 @@
 
 public interface IInput
 {
-    bool Active { get; set; }
+    bool Active { get; }
 }
 
 public enum Direction { Up, Down }
 
-public class Logic
+public class Logic<TInput>where TInput:IInput
 {
-    readonly IInput[] inputs;
+    public TInput[] Inputs { get; } = new TInput[5];
     readonly Action<int /*counter*/, Direction, double /*freq in Hz*/> finished;
 
     public Logic(Action<int, Direction, double> finished)
