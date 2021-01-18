@@ -6,17 +6,25 @@
         xmlns:local="clr-namespace:Simulator"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <ItemsControl ItemsSource="{Binding Logic.Inputs}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <CheckBox IsChecked="{Binding Active}"/>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal"/>
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-    </ItemsControl>
-    
+
+    <StackPanel Orientation="Vertical">
+        <ItemsControl ItemsSource="{Binding Logic.Inputs}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox IsChecked="{Binding Active}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock>Counter: <Run Text="{Binding Counter}"/></TextBlock>
+            <TextBlock Margin="8,0">Direction: <Run Text="{Binding Direction}"/></TextBlock>
+            <TextBlock>Frequency: <Run Text="{Binding Frequency}"/></TextBlock>
+        </StackPanel>
+    </StackPanel>
+
 </Window>
