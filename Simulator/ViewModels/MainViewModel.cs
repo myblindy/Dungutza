@@ -22,6 +22,12 @@ namespace Simulator.ViewModels
         public MainViewModel()
         {
             Logic = new((counter, direction, frequency) => (Counter, Direction, Frequency) = (counter, direction, frequency));
+            Logic.Inputs[0].Text = "Close Limit";
+            Logic.Inputs[1].Text = "Open Limit";
+            Logic.Inputs[2].Text = "Index";
+            Logic.Inputs[3].Text = "Pulse";
+            Logic.Inputs[4].Text = "Stop";
+
         }
     }
 }

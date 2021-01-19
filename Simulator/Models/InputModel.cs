@@ -10,6 +10,9 @@ namespace Simulator.Models
     class InputModel : ReactiveObject, IInput
     {
         bool active;
-        public bool Active { get =>active; set => this.RaiseAndSetIfChanged(ref active, value); }
+        public bool Active { get => active; set => this.RaiseAndSetIfChanged(ref active, value); }
+
+        string text;
+        public string Text { get => text; set => this.RaiseAndSetIfChanged(ref text, value); }
     }
 }

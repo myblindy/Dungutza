@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 public interface IInput
 {
@@ -7,9 +8,9 @@ public interface IInput
 
 public enum Direction { Up, Down }
 
-public class Logic<TInput>where TInput:IInput
+public class Logic<TInput> where TInput : IInput, new()
 {
-    public TInput[] Inputs { get; } = new TInput[5];
+    public TInput[] Inputs { get; } = Enumerable.Range(0, 5).Select(_ => new TInput()).ToArray();
     readonly Action<int /*counter*/, Direction, double /*freq in Hz*/> finished;
 
     public Logic(Action<int, Direction, double> finished)
