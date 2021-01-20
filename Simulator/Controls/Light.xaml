@@ -8,6 +8,6 @@
         <local:ActiveConverter x:Key="ActiveConverter"/>
     </UserControl.Resources>
     
-    <Label MinWidth="50" Height="50" Content="{Binding Text, ElementName=RootView}" HorizontalAlignment="Center" VerticalAlignment="Center"
+    <Label MinWidth="50" Height="50" Content="{Binding Text, ElementName=RootView}" HorizontalAlignment="Stretch" VerticalAlignment="Center"
            Background="{Binding Active, ElementName=RootView, Converter={StaticResource ActiveConverter}}" Foreground="White"/>
 </UserControl>
