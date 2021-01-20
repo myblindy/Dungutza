@@ -35,7 +35,7 @@ namespace CommonLogic
 
             switch (step)
             {
-                case 0: if (updatePin(OpenPin)) { step = 1; direction = Direction.Up; } else if (updatePin(ClosePin)) { step = 1; direction = Direction.Down; } break;
+                case 0: if (updatePin(OpenPin)) { step = 1; direction = Direction.Down; } else if (updatePin(ClosePin)) { step = 1; direction = Direction.Up; } break;
                 case 1: if (updatePin(IndexPin)) step = 2; break;
                 case 2: if (updatePin(StopPin)) { step = 0; callFinished(); } else if (updatePin(PulsePin)) { step = 3; ++counter; } break;
                 case 3: if (updatePin(StopPin)) { step = 0; callFinished(); } else if (!updatePin(PulsePin)) step = 2; break;
