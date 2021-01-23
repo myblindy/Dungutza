@@ -3,27 +3,23 @@ using System.Linq;
 
 namespace CommonLogic
 {
-    public interface IInput
-    {
-        bool Active { get; }
-    }
-
     public enum Direction { Up, Down }
 
-    public class Logic<TInput> where TInput : IInput, new()
+    public class Logic
     {
+        public static readonly string[] Pins = new[] { "Close Limit", "Open Limit", "Index", "Pulse", "Stop" };
+
         const int ClosePin = 0;
         const int OpenPin = 1;
         const int IndexPin = 2;
         const int PulsePin = 3;
         const int StopPin = 4;
-        public TInput[] Inputs { get; } = Enumerable.Range(0, 5).Select(_ => new TInput()).ToArray();
 
         readonly Action<int /*counter*/, Direction, double /*freq in Hz*/> finished;
-        readonly Func<int, bool> updatePin;
+        readonly Func<int, bool> readPin;
 
-        public Logic(Action<int, Direction, double> finished, Func<int, bool> updatePin) =>
-            (this.finished, this.updatePin) = (finished, updatePin);
+        public Logic(Action<int, Direction, double> finished, Func<int, bool> readPin) =>
+            (this.finished, this.readPin) = (finished, readPin);
 
         int step, counter, cycleCounter;
         DateTime cycleStart = DateTime.Now;
@@ -35,14 +31,13 @@ namespace CommonLogic
 
             switch (step)
             {
-                case 0: if (updatePin(OpenPin)) { step = 1; direction = Direction.Up; } else if (updatePin(ClosePin)) { step = 1; direction = Direction.Down; } break;
-                case 1: if (updatePin(IndexPin)) step = 2; break;
-                case 2: if (updatePin(StopPin)) { step = 0; callFinished(); } else if (updatePin(PulsePin)) { step = 3; ++counter; } break;
-                case 3: if (updatePin(StopPin)) { step = 0; callFinished(); } else if (!updatePin(PulsePin)) step = 2; break;
+                case 0: if (readPin(OpenPin)) { step = 1; direction = Direction.Up; } else if (readPin(ClosePin)) { step = 1; direction = Direction.Down; } break;
+                case 1: if (readPin(IndexPin)) step = 2; break;
+                case 2: if (readPin(StopPin)) { step = 0; callFinished(); } else if (readPin(PulsePin)) { step = 3; ++counter; } break;
+                case 3: if (readPin(StopPin)) { step = 0; callFinished(); } else if (!readPin(PulsePin)) step = 2; break;
             }
 
             ++cycleCounter;
-
         }
     }
 }

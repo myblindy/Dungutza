@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Simulator.Models
 {
-    class InputModel : ReactiveObject, IInput
+    class InputModel : ReactiveObject
     {
         bool active;
         public bool Active { get => active; set => this.RaiseAndSetIfChanged(ref active, value); }

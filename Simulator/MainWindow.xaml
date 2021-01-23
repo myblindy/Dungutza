@@ -5,7 +5,7 @@
         Title="Simulator" Width="800" SizeToContent="Height">
 
     <StackPanel Orientation="Vertical">
-        <ItemsControl ItemsSource="{Binding Logic.Inputs}">
+        <ItemsControl ItemsSource="{Binding Inputs}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <controls:Light Text="{Binding Text}"  Margin="8" Active="{Binding Active}" />
