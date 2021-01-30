@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace CommonLogic
@@ -22,12 +23,12 @@ namespace CommonLogic
             (this.finished, this.readPin) = (finished, readPin);
 
         int step, counter, cycleCounter;
-        DateTime cycleStart = DateTime.Now;
+        readonly Stopwatch cycleStart = Stopwatch.StartNew();
         Direction direction;
 
         public void Step()
         {
-            void callFinished() { finished?.Invoke(counter, direction, cycleCounter / (DateTime.Now - cycleStart).TotalSeconds); (cycleStart, cycleCounter, counter) = (DateTime.Now, 0, 0); }
+            void callFinished() { finished?.Invoke(counter, direction, cycleCounter / cycleStart.Elapsed.TotalSeconds); (cycleCounter, counter) = (0, 0); cycleStart.Restart(); }
 
             switch (step)
             {
