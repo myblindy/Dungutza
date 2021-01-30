@@ -1,10 +1,14 @@
 ﻿using Avalonia.Threading;
 using CommonLogic;
 using LiveRpi.Models;
+using MoreLinq;
 using ReactiveUI;
+using System;
 using System.Device.Gpio;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiveRpi.ViewModels
 {
@@ -24,7 +28,7 @@ namespace LiveRpi.ViewModels
         bool receivedResult;
         public bool ReceivedResult { get => receivedResult; set => this.RaiseAndSetIfChanged(ref receivedResult, value); }
 
-        public InputModel[] Inputs { get; } = Logic.Pins.Zip(new[] { 5, 6, 7, 8, 9 }, (name, pinId) => (name, pinId))
+        public InputModel[] Inputs { get; } = Logic.Pins.Zip(new[] { 2, 3, 4, 17, 27 }, (name, pinId) => (name, pinId))
             .Select(w => new InputModel { Text = w.name, PinId = w.pinId })
             .ToArray();
 
@@ -36,7 +40,12 @@ namespace LiveRpi.ViewModels
         {
             mainDispatcher = Dispatcher.UIThread;
 
-            Logic = new((counter, direction, frequency) => mainDispatcher.InvokeAsync(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true)),
+            Inputs.ForEach(i => gpioController.OpenPin(i.PinId, PinMode.Input));
+            Logic = new((counter, direction, frequency) =>
+                {
+                    mainDispatcher.InvokeAsync(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true));
+                    _ = File.AppendAllLinesAsync("log.csv", new[] { $"{DateTime.Now},{counter},{direction},{frequency}" });
+                },
                 pin => gpioController.Read(Inputs[pin].PinId) == PinValue.High);
 
             logicThread = new(() => { while (true) Logic.Step(); }) { Name = "Logic Thread", IsBackground = true };
