@@ -41,10 +41,12 @@ namespace LiveRpi.ViewModels
             mainDispatcher = Dispatcher.UIThread;
 
             Inputs.ForEach(i => gpioController.OpenPin(i.PinId, PinMode.Input));
+
+            var logStream = new StreamWriter(new FileStream("log.csv", FileMode.Append, FileAccess.ReadWrite, FileShare.Read, 1024 * 1024));
             Logic = new((counter, direction, frequency) =>
                 {
-                    mainDispatcher.InvokeAsync(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true));
-                    _ = File.AppendAllLinesAsync("log.csv", new[] { $"{DateTime.Now},{counter},{direction},{frequency}" });
+                    _ = mainDispatcher.InvokeAsync(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true));
+                    _ = logStream.WriteLineAsync($"{DateTime.Now},{counter},{direction},{frequency}");
                 },
                 pin => gpioController.Read(Inputs[pin].PinId) == PinValue.High);
 
