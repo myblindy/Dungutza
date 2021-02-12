@@ -42,7 +42,7 @@ namespace LiveRpi.ViewModels
 
             Inputs.ForEach(i => gpioController.OpenPin(i.PinId, PinMode.Input));
 
-            var logStream = new StreamWriter(new FileStream("log.csv", FileMode.Append, FileAccess.ReadWrite, FileShare.Read, 1024 * 1024));
+            var logStream = new StreamWriter(new FileStream("log.csv", FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 1024 * 1024));
             Logic = new((counter, direction, frequency) =>
                 {
                     _ = mainDispatcher.InvokeAsync(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true));
