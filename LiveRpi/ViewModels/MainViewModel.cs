@@ -30,7 +30,7 @@ namespace LiveRpi.ViewModels
 
         public bool ReceivedResult { get => receivedResult; set => this.RaiseAndSetIfChanged(ref receivedResult, value); }
 
-        public InputModel[] Inputs { get; } = Logic.Pins.Zip(new[] { 2, 3, 4, 17, 27 }, (name, pinId) => (name, pinId))
+        public InputModel[] Inputs { get; } = Logic.Pins.Zip(new[] { 22, 5, 4, 17, 27 }, (name, pinId) => (name, pinId))
             .Select(w => new InputModel { Text = w.name, PinId = w.pinId })
             .ToArray();
 
