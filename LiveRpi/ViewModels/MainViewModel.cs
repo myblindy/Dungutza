@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LiveRpi.ViewModels
 {
-    class MainViewModel : ReactiveObject
+    class MainViewModel : ReactiveObject, IDisposable
     {
         public Logic Logic { get; }
 
@@ -26,6 +26,8 @@ namespace LiveRpi.ViewModels
         public double Frequency { get => frequency; set => this.RaiseAndSetIfChanged(ref frequency, value); }
 
         bool receivedResult;
+        private bool disposedValue;
+
         public bool ReceivedResult { get => receivedResult; set => this.RaiseAndSetIfChanged(ref receivedResult, value); }
 
         public InputModel[] Inputs { get; } = Logic.Pins.Zip(new[] { 2, 3, 4, 17, 27 }, (name, pinId) => (name, pinId))
@@ -35,6 +37,8 @@ namespace LiveRpi.ViewModels
         readonly Dispatcher mainDispatcher;
         readonly Thread logicThread;
         readonly GpioController gpioController = new();
+        readonly StreamWriter logStreamWriter = new StreamWriter(new FileStream("log.csv", FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 1024 * 1024));
+        bool requestStopThread;
 
         public MainViewModel()
         {
@@ -42,16 +46,44 @@ namespace LiveRpi.ViewModels
 
             Inputs.ForEach(i => gpioController.OpenPin(i.PinId, PinMode.Input));
 
-            var logStream = new StreamWriter(new FileStream("log.csv", FileMode.Append, FileAccess.ReadWrite, FileShare.Read, 1024 * 1024));
             Logic = new((counter, direction, frequency) =>
                 {
                     _ = mainDispatcher.InvokeAsync(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true));
-                    _ = logStream.WriteLineAsync($"{DateTime.Now},{counter},{direction},{frequency}");
+                    _ = logStreamWriter.WriteLineAsync($"{DateTime.Now},{counter},{direction},{frequency}");
                 },
                 pin => gpioController.Read(Inputs[pin].PinId) == PinValue.High);
 
-            logicThread = new(() => { while (true) Logic.Step(); }) { Name = "Logic Thread", IsBackground = true };
+            logicThread = new(() => { while (!requestStopThread) Logic.Step(); }) { Name = "Logic Thread", IsBackground = true };
             logicThread.Start();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // managed state
+                }
+
+                // unmanaged state
+                requestStopThread = true;
+                logicThread.Join();
+                logStreamWriter.Dispose();
+
+                disposedValue = true;
+            }
+        }
+
+        ~MainViewModel()
+        {
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
