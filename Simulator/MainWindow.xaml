@@ -18,7 +18,7 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
         <WrapPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Center" Visibility="{Binding ReceivedResult, Converter={StaticResource BooleanVisibilityConverter}}">
-            <TextBlock>Counter: <Run Text="{Binding Counter}"/></TextBlock>
+            <TextBlock>Counter: <Run Text="{Binding Counter}"/> + <Run Text="{Binding LeftOverCounter}"/></TextBlock>
             <TextBlock Margin="8,0">Direction: <Run Text="{Binding Direction}"/></TextBlock>
             <TextBlock>Frequency: <Run Text="{Binding Frequency, Converter={StaticResource FrequencyConverter}}"/></TextBlock>
         </WrapPanel>

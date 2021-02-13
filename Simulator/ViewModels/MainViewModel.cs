@@ -17,6 +17,9 @@ namespace Simulator.ViewModels
         int counter;
         public int Counter { get => counter; set => this.RaiseAndSetIfChanged(ref counter, value); }
 
+        int leftOverCounter;
+        public int LeftOverCounter { get => leftOverCounter; set => this.RaiseAndSetIfChanged(ref leftOverCounter, value); }
+
         Direction direction;
         public Direction Direction { get => direction; set => this.RaiseAndSetIfChanged(ref direction, value); }
 
@@ -27,7 +30,7 @@ namespace Simulator.ViewModels
         public bool ReceivedResult { get => receivedResult; set => this.RaiseAndSetIfChanged(ref receivedResult, value); }
 
         public InputModel[] Inputs { get; } = Logic.Pins.Select(name => new InputModel { Text = name }).ToArray();
-        
+
         readonly Dispatcher mainDispatcher;
         readonly Thread logicThread;
 
@@ -35,7 +38,7 @@ namespace Simulator.ViewModels
         {
             mainDispatcher = Dispatcher.CurrentDispatcher;
 
-            Logic = new((counter, direction, frequency) => mainDispatcher.BeginInvoke(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true)),
+            Logic = new((counter, leftOverCounter, direction, frequency) => mainDispatcher.BeginInvoke(() => (Counter, LeftOverCounter, Direction, Frequency, ReceivedResult) = (counter, leftOverCounter, direction, frequency, true)),
                 pin => Inputs[pin].Active);
 
             logicThread = new(() => { while (true) Logic.Step(); }) { Name = "Logic Thread", IsBackground = true };
