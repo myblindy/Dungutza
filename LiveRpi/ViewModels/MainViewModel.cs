@@ -19,6 +19,9 @@ namespace LiveRpi.ViewModels
         int counter;
         public int Counter { get => counter; set => this.RaiseAndSetIfChanged(ref counter, value); }
 
+        int leftOverCounter;
+        public int LeftOverCounter { get => leftOverCounter; set => this.RaiseAndSetIfChanged(ref leftOverCounter, value); }
+
         Direction direction;
         public Direction Direction { get => direction; set => this.RaiseAndSetIfChanged(ref direction, value); }
 
@@ -46,10 +49,10 @@ namespace LiveRpi.ViewModels
 
             Inputs.ForEach(i => gpioController.OpenPin(i.PinId, PinMode.Input));
 
-            Logic = new((counter, direction, frequency) =>
+            Logic = new((counter, leftOverCounter, direction, frequency) =>
                 {
-                    _ = mainDispatcher.InvokeAsync(() => (Counter, Direction, Frequency, ReceivedResult) = (counter, direction, frequency, true));
-                    _ = logStreamWriter.WriteLineAsync($"{DateTime.Now},{counter},{direction},{frequency}");
+                    _ = mainDispatcher.InvokeAsync(() => (Counter, LeftOverCounter, Direction, Frequency, ReceivedResult) = (counter, leftOverCounter, direction, frequency, true));
+                    _ = logStreamWriter.WriteLineAsync($"{DateTime.Now},{counter},{leftOverCounter},{direction},{frequency}");
                 },
                 pin => gpioController.Read(Inputs[pin].PinId) == PinValue.High);
 
