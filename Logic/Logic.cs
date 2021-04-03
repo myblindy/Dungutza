@@ -10,11 +10,11 @@ namespace CommonLogic
     {
         public static readonly string[] Pins = new[] { "Close Limit", "Open Limit", "Index", "Pulse", "Stop" };
 
-        const int ClosePin = 0;
-        const int OpenPin = 1;
-        const int IndexPin = 2;
-        const int PulsePin = 3;
-        const int StopPin = 4;
+        const int ClosePin = 5;
+        const int OpenPin = 6;
+        const int IndexPin = 13;
+        const int PulsePin = 19;
+        const int StopPin = 16;
 
         readonly Action<int /*counter*/, Direction, double /*freq in Hz*/> finished;
         readonly Func<int, bool> readPin;
