@@ -11,6 +11,7 @@ namespace LiveRpi
         {
             InitializeComponent();
             DataContext = new MainViewModel();
+            Closed += (s, e) => ((MainViewModel)DataContext).Dispose();
 #if DEBUG
             this.AttachDevTools();
 #endif
